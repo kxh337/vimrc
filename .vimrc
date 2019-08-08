@@ -43,33 +43,53 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+
+" Remapped commands
+nnoremap<leader><space> :nohlsearch<CR>
 imap jk <Esc>
 imap JK <Esc>
 
 syntax enable
+set background=dark
+set ffs=dos
+set colorcolumn=120
 
+" Tab spacing
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
 
+" Smart spacing
 set ai
 set si
 set wrap
 
+" Cmd line
 set showcmd
 set cmdheight=2
 set cursorline
+set laststatus=2
+set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
+function! HasPaste()
+    if &paste
+        return 'PASTE MODE  '
+    endif
+    return ''
+endfunction
 
+" Reload file when there are changes
 set autoread
 
 filetype indent on
 filetype plugin on
 
+" Wild menu
 set wildmenu
 set wildignore=*.o,*.pyc
 set lazyredraw
 
+" Search
 set showmatch
 set incsearch
 set hlsearch
@@ -77,20 +97,28 @@ set ignorecase
 set magic
 set mat=2
 
+" Ruler
 set so=999
 set ruler
 
-nnoremap<leader><space> :nohlsearch<CR>
-
+" Fold
 set foldenable
 set foldlevelstart=10
 set foldnestmax=10
 
+" Numbering
 set number relativenumber
 
+" Extra files
 set nobackup
 set nowb
 set noswapfile
+
+" Buff Explorer
+let g:bufExplorerShowRelativePath=1
+let g:bufExplorerSplitOutPathName=1 
+let g:bufExplorerSortBy='fullpath'
+let g:bufExplorerShowTabBuffer=1
 
 " CtrlP
 set runtimepath^=~/.vim/bundle/ctrlp.vim
