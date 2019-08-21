@@ -51,7 +51,7 @@ imap JK <Esc>
 
 syntax enable
 set background=dark
-set ffs=dos
+set ffs=unix
 set colorcolumn=120
 
 " Tab spacing
@@ -102,9 +102,10 @@ set so=999
 set ruler
 
 " Fold
-set foldenable
+set foldenable 
 set foldlevelstart=10
 set foldnestmax=10
+setlocal foldmethod=syntax
 
 " Numbering
 set number relativenumber
@@ -119,6 +120,19 @@ let g:bufExplorerShowRelativePath=1
 let g:bufExplorerSplitOutPathName=1 
 let g:bufExplorerSortBy='fullpath'
 let g:bufExplorerShowTabBuffer=1
+nnoremap <silent> <F9> :BufExplorer<CR>
 
 " CtrlP
 set runtimepath^=~/.vim/bundle/ctrlp.vim
+let g:ctrlp_open_multiple_files='i'
+let g:ctrlp_show_hidden=1
+let g:ctrlp_mruf_case_sensitive=0
+let g:ctrlp_mruf_relative=1
+
+" Git diff colors
+if &diff
+    highlight DiffAdd    term=bold         ctermbg=darkgreen ctermfg=white    cterm=bold guibg=DarkGreen  guifg=White    gui=bold
+    highlight DiffText   term=reverse,bold ctermbg=red       ctermfg=yellow   cterm=bold guibg=DarkRed    guifg=yellow   gui=bold
+    highlight DiffChange term=bold         ctermbg=black     ctermfg=white    cterm=bold guibg=Black      guifg=White    gui=bold
+    highlight DiffDelete term=none         ctermbg=darkblue  ctermfg=darkblue cterm=none guibg=DarkBlue   guifg=DarkBlue gui=none
+endif
