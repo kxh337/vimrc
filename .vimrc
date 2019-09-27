@@ -12,6 +12,9 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'ycm-core/YouCompleteMe'
 Plugin 'jlanzarotta/bufexplorer'
 Plugin 'ARM9/arm-syntax-vim'
+Plugin 'plasticboy/vim-markdown'
+Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
 
 " " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -115,6 +118,19 @@ set nobackup
 set nowb
 set noswapfile
 
+" Sessions
+let g:session_dir = '~/.vim/sessions'
+exec 'nnoremap <Leader>ss :mks! ' . g:session_dir . '/*.vim<C-D><BS><BS><BS><BS><BS>'
+exec 'nnoremap <Leader>sr :so ' . g:session_dir . '/*.vim<C-D><BS><BS><BS><BS><BS>'
+
+" Spelling
+set spell spelllang=en_us
+set spellfile=~/.vim/spell/en.utf-8.add
+hi clear SpellBad SpellRare SpellCap SpellLocal
+hi SpellBad cterm=underline
+hi SpellCap cterm=underline
+hi SpellLocal cterm=underline
+
 " Buff Explorer
 let g:bufExplorerShowRelativePath=1
 let g:bufExplorerSplitOutPathName=1 
@@ -124,10 +140,35 @@ nnoremap <silent> <F9> :BufExplorer<CR>
 
 " CtrlP
 set runtimepath^=~/.vim/bundle/ctrlp.vim
-let g:ctrlp_open_multiple_files='i'
+let g:ctrlp_open_multiple_files='ir'
 let g:ctrlp_show_hidden=1
+let g:ctrlp_lazy_update=1
 let g:ctrlp_mruf_case_sensitive=0
 let g:ctrlp_mruf_relative=1
+let g:ctrlp_open_new_file='r'
+let g:ctrlp_working_path_mode='0'
+let g:ctrlp_clear_cache_on_exit=0
+
+
+" csope setting
+if has ("csope")
+    set csprg=/usr/local/bin/csope
+    set csto=0
+    set cst
+    set nocsverb
+    " add any database in current directory
+    if filereadable("csope.out")
+        cs add csope.out
+    " else add database pointed to by environment
+    elseif $CSOPE_DB != ""
+        cs add $CSOPE_DB
+    endif
+    set csverb
+endif
+
+" Nerd tree
+map <C-n> :NERDTreeToggle<CR>
+let NERDTreeShowHidden=1
 
 " Git diff colors
 if &diff
