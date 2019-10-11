@@ -15,6 +15,7 @@ Plugin 'ARM9/arm-syntax-vim'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'scrooloose/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'nvie/vim-flake8'
 
 " " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -109,6 +110,7 @@ set foldenable
 set foldlevelstart=10
 set foldnestmax=10
 setlocal foldmethod=syntax
+nnoremap <space> za
 
 " Numbering
 set number relativenumber
@@ -126,10 +128,20 @@ exec 'nnoremap <Leader>sr :so ' . g:session_dir . '/*.vim<C-D><BS><BS><BS><BS><B
 " Spelling
 set spell spelllang=en_us
 set spellfile=~/.vim/spell/en.utf-8.add
-hi clear SpellBad SpellRare SpellCap SpellLocal
-hi SpellBad cterm=underline
-hi SpellCap cterm=underline
-hi SpellLocal cterm=underline
+hi clear SpellBad 
+hi clear SpellRare 
+hi clear SpellCap 
+hi clear SpellLocal
+hi SpellBad cterm=underline gui=undercurl
+hi SpellRare cterm=underline gui=undercurl
+hi SpellCap cterm=underline gui=undercurl
+hi SpellLocal cterm=underline gui=undercurl
+
+" Split navigations shortcuts
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
 " Buff Explorer
 let g:bufExplorerShowRelativePath=1
@@ -148,6 +160,7 @@ let g:ctrlp_mruf_relative=1
 let g:ctrlp_open_new_file='r'
 let g:ctrlp_working_path_mode='0'
 let g:ctrlp_clear_cache_on_exit=0
+nnoremap <silent> <F5> :CtrlPTag<cr>
 
 
 " csope setting
@@ -177,3 +190,32 @@ if &diff
     highlight DiffChange term=bold         ctermbg=black     ctermfg=white    cterm=bold guibg=Black      guifg=White    gui=bold
     highlight DiffDelete term=none         ctermbg=darkblue  ctermfg=darkblue cterm=none guibg=DarkBlue   guifg=DarkBlue gui=none
 endif
+
+" PEP 8 indentation 
+au BufNewFile, BufRead *.py
+    \ set tabstop=4
+    \ set softtabstop=4
+    \ set shiftwidth=4
+    \ set textwidth=79
+    \ set expandtab
+    \ set autoindent
+    \ set foldmethod=indent
+
+" Full stack development
+au BufNewFile,BufRead *.js, *.html, *.css
+    \ set tabstop=2
+    \ set softtabstop=2
+    \ set shiftwidth=2
+
+" Flag unnecessary whitespace
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+"python with virtualenv support
+py << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+  project_base_dir = os.environ['VIRTUAL_ENV']
+  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+  execfile(activate_this, dict(__file__=activate_this))
+EOF
