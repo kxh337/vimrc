@@ -49,6 +49,7 @@ filetype plugin indent on    " required
 
 
 " Remapped commands
+let mapleader = "\<Space>"
 nnoremap<leader><space> :nohlsearch<CR>
 imap jk <Esc>
 imap JK <Esc>
@@ -74,13 +75,20 @@ set showcmd
 set cmdheight=2
 set cursorline
 set laststatus=2
-set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
-function! HasPaste()
-    if &paste
-        return 'PASTE MODE  '
-    endif
-    return ''
+function StatuslineGit()
+  let l:branchname = GitBranch()
+  return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
 endfunction
+
+function! GitBranch()
+  return system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
+endfunction
+
+function! StatuslineGit()
+  let l:branchname = GitBranch()
+  return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
+endfunction
+set statusline=%#PmenuSel#%{StatuslineGit()}%#LineNr#\ %f%m\%=%#CusorColumn#\ %y\ %{&fileencoding?&fileenconding:&encoding}\[%{&fileformat}\]\ %p%%\ %l:%c
 
 " Reload file when there are changes
 set autoread
@@ -92,6 +100,7 @@ filetype plugin on
 set wildmenu
 set wildignore=*.o,*.pyc
 set lazyredraw
+set vb t_vb=
 
 " Search
 set showmatch
@@ -110,7 +119,7 @@ set foldenable
 set foldlevelstart=10
 set foldnestmax=10
 setlocal foldmethod=syntax
-nnoremap <space> za
+nnoremap <leader>f za
 
 " Numbering
 set number relativenumber
@@ -148,7 +157,7 @@ let g:bufExplorerShowRelativePath=1
 let g:bufExplorerSplitOutPathName=1 
 let g:bufExplorerSortBy='fullpath'
 let g:bufExplorerShowTabBuffer=1
-nnoremap <silent> <F9> :BufExplorer<CR>
+nnoremap <leader>be :BufExplorer<CR>
 
 " CtrlP
 set runtimepath^=~/.vim/bundle/ctrlp.vim
@@ -160,7 +169,7 @@ let g:ctrlp_mruf_relative=1
 let g:ctrlp_open_new_file='r'
 let g:ctrlp_working_path_mode='0'
 let g:ctrlp_clear_cache_on_exit=0
-nnoremap <silent> <F5> :CtrlPTag<cr>
+nnoremap <leader>t :CtrlPTag<cr>
 
 
 " csope setting
@@ -182,6 +191,12 @@ endif
 " Nerd tree
 map <C-n> :NERDTreeToggle<CR>
 let NERDTreeShowHidden=1
+
+" YCM
+" Let clangd fully control code completion
+let g:ycm_clangd_uses_ycmd_caching = 0
+" Use installed clangd, not YCM-bundled clangd which doesn't get updates.
+let g:ycm_clangd_binary_path = exepath("/opt/clang+llvm-10.0.0/bin/clang")
 
 " Git diff colors
 if &diff
@@ -208,10 +223,11 @@ au BufNewFile,BufRead *.js, *.html, *.css
     \ set shiftwidth=2
 
 " Flag unnecessary whitespace
+hi BadWhitespace term=bold ctermbg=red ctermfg=white
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
 "python with virtualenv support
-py << EOF
+py3 << EOF
 import os
 import sys
 if 'VIRTUAL_ENV' in os.environ:
