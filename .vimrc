@@ -16,6 +16,9 @@ Plugin 'plasticboy/vim-markdown'
 Plugin 'scrooloose/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'nvie/vim-flake8'
+Plugin 'idanarye/vim-vebugger'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'junegunn/fzf'
 
 " " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -159,18 +162,18 @@ let g:bufExplorerSortBy='fullpath'
 let g:bufExplorerShowTabBuffer=1
 nnoremap <leader>be :BufExplorer<CR>
 
-" CtrlP
-set runtimepath^=~/.vim/bundle/ctrlp.vim
-let g:ctrlp_open_multiple_files='ir'
-let g:ctrlp_show_hidden=1
-let g:ctrlp_lazy_update=1
-let g:ctrlp_mruf_case_sensitive=0
-let g:ctrlp_mruf_relative=1
-let g:ctrlp_open_new_file='r'
-let g:ctrlp_working_path_mode='0'
-let g:ctrlp_clear_cache_on_exit=0
-nnoremap <leader>t :CtrlPTag<cr>
+" vim gitgutter settings
+set updatetime=100
+highlight GitGutterAdd    guifg=#009900 ctermfg=2
+highlight GitGutterChange guifg=#bbbb00 ctermfg=3
+highlight GitGutterDelete guifg=#ff2222 ctermfg=1
+highlight SignColumn guibg=grey ctermbg=grey
 
+" FZF setting
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
 
 " csope setting
 if has ("csope")
@@ -200,6 +203,7 @@ let g:ycm_clangd_binary_path = exepath("/opt/clang+llvm-10.0.0/bin/clang")
 
 " Git diff colors
 if &diff
+    set noro
     highlight DiffAdd    term=bold         ctermbg=darkgreen ctermfg=white    cterm=bold guibg=DarkGreen  guifg=White    gui=bold
     highlight DiffText   term=reverse,bold ctermbg=red       ctermfg=yellow   cterm=bold guibg=DarkRed    guifg=yellow   gui=bold
     highlight DiffChange term=bold         ctermbg=black     ctermfg=white    cterm=bold guibg=Black      guifg=White    gui=bold
@@ -222,16 +226,20 @@ au BufNewFile,BufRead *.js, *.html, *.css
     \ set softtabstop=2
     \ set shiftwidth=2
 
+" Markdown
+au BufNewFile,BufRead *.md
+    \ set textwidth=80
+
 " Flag unnecessary whitespace
-hi BadWhitespace term=bold ctermbg=red ctermfg=white
+hi BadWhitespace ctermbg=red guibg=red
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
-"python with virtualenv support
+" python with virtualenv support
 py3 << EOF
 import os
 import sys
 if 'VIRTUAL_ENV' in os.environ:
   project_base_dir = os.environ['VIRTUAL_ENV']
-  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+  activate_this = os.path.join(project_base_dir, 'venv/bin/activate_this.py')
   execfile(activate_this, dict(__file__=activate_this))
 EOF
