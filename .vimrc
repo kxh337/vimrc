@@ -109,7 +109,7 @@ set so=999
 set ruler
 
 " Fold
-set foldenable 
+set foldenable
 set foldlevelstart=10
 set foldnestmax=10
 setlocal foldmethod=syntax
@@ -130,9 +130,9 @@ exec 'nnoremap <Leader>sr :so ' . g:session_dir . '/*.vim<C-D><BS><BS><BS><BS><B
 " Spelling
 set spell spelllang=en_us
 set spellfile=~/.vim/spell/en.utf-8.add
-hi clear SpellBad 
-hi clear SpellRare 
-hi clear SpellCap 
+hi clear SpellBad
+hi clear SpellRare
+hi clear SpellCap
 hi clear SpellLocal
 hi SpellBad cterm=underline gui=undercurl
 hi SpellRare cterm=underline gui=undercurl
@@ -193,7 +193,7 @@ if &diff
     highlight DiffDelete term=none         ctermbg=darkblue  ctermfg=darkblue cterm=none guibg=DarkBlue   guifg=DarkBlue gui=none
 endif
 
-" PEP 8 indentation 
+" PEP 8 indentation
 au BufNewFile, BufRead *.py
     \ set tabstop=4
     \ set softtabstop=4
