@@ -20,6 +20,8 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'tpope/vim-fugitive'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 
 " " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -79,6 +81,8 @@ set showcmd
 set cmdheight=2
 set cursorline
 set laststatus=2
+let g:airline_solarized_bg='dark'
+let g:airline_theme='solarized'
 
 " Reload file when there are changes
 set autoread
