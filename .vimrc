@@ -10,7 +10,6 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'ycm-core/YouCompleteMe'
-Plugin 'jlanzarotta/bufexplorer'
 Plugin 'ARM9/arm-syntax-vim'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'scrooloose/nerdtree'
@@ -19,6 +18,8 @@ Plugin 'nvie/vim-flake8'
 Plugin 'idanarye/vim-vebugger'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+Plugin 'tpope/vim-fugitive'
 
 " " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -78,20 +79,6 @@ set showcmd
 set cmdheight=2
 set cursorline
 set laststatus=2
-function StatuslineGit()
-  let l:branchname = GitBranch()
-  return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
-endfunction
-
-function! GitBranch()
-  return system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
-endfunction
-
-function! StatuslineGit()
-  let l:branchname = GitBranch()
-  return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
-endfunction
-set statusline=%#PmenuSel#%{StatuslineGit()}%#LineNr#\ %f%m\%=%#CusorColumn#\ %y\ %{&fileencoding?&fileenconding:&encoding}\[%{&fileformat}\]\ %p%%\ %l:%c
 
 " Reload file when there are changes
 set autoread
@@ -122,7 +109,6 @@ set foldenable
 set foldlevelstart=10
 set foldnestmax=10
 setlocal foldmethod=syntax
-nnoremap <leader>f za
 
 " Numbering
 set number relativenumber
@@ -155,13 +141,6 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-" Buff Explorer
-let g:bufExplorerShowRelativePath=1
-let g:bufExplorerSplitOutPathName=1 
-let g:bufExplorerSortBy='fullpath'
-let g:bufExplorerShowTabBuffer=1
-nnoremap <leader>be :BufExplorer<CR>
-
 " vim gitgutter settings
 set updatetime=100
 highlight GitGutterAdd    guifg=#009900 ctermfg=2
@@ -170,10 +149,10 @@ highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 highlight SignColumn guibg=grey ctermbg=grey
 
 " FZF setting
-let g:fzf_action = {
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
+nnoremap <leader><leader> :Commands<CR>
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>l :Lines<CR>
+nnoremap <leader>f :Files<CR>
 
 " csope setting
 if has ("csope")
