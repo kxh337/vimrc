@@ -81,8 +81,7 @@ set showcmd
 set cmdheight=2
 set cursorline
 set laststatus=2
-let g:airline_solarized_bg='dark'
-let g:airline_theme='solarized'
+let g:airline_theme='dues'
 
 " Reload file when there are changes
 set autoread
@@ -157,6 +156,7 @@ nnoremap <leader><leader> :Commands<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>l :Lines<CR>
 nnoremap <leader>f :Files<CR>
+nnoremap <leader>t :Tags<CR>
 
 " csope setting
 if has ("csope")
@@ -215,7 +215,7 @@ au BufNewFile,BufRead *.md
 
 " Flag unnecessary whitespace
 hi BadWhitespace ctermbg=red guibg=red
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+au BufRead,BufNewFile *rc,*.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
 " python with virtualenv support
 py3 << EOF
