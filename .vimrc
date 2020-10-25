@@ -9,7 +9,6 @@ call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'ycm-core/YouCompleteMe'
 Plugin 'ARM9/arm-syntax-vim'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'scrooloose/nerdtree'
@@ -22,6 +21,10 @@ Plugin 'junegunn/fzf.vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'fatih/vim-go'
+Plugin 'neoclide/coc.nvim'
+Plugin 'suan/vim-instant-markdown', {'rtp': 'after'}
+Plugin 'habamax/vim-godot'
 
 " " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -56,7 +59,8 @@ filetype plugin indent on    " required
 
 " Remapped commands
 let mapleader = "\<Space>"
-nnoremap<leader><space> :nohlsearch<CR>
+nnoremap<leader>c :noh<CR>
+nnoremap<leader>f za<CR>
 imap jk <Esc>
 imap JK <Esc>
 
@@ -81,7 +85,7 @@ set showcmd
 set cmdheight=2
 set cursorline
 set laststatus=2
-let g:airline_theme='dues'
+let g:airline_theme='deus'
 
 " Reload file when there are changes
 set autoread
@@ -154,8 +158,9 @@ highlight SignColumn guibg=grey ctermbg=grey
 " FZF setting
 nnoremap <leader><leader> :Commands<CR>
 nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>l :Lines<CR>
-nnoremap <leader>f :Files<CR>
+nnoremap <leader>/ :Lines<CR>
+nnoremap <leader>p :Files <CR>
+nnoremap <C-p> :GFiles<CR>
 nnoremap <leader>t :Tags<CR>
 
 " csope setting
@@ -178,11 +183,77 @@ endif
 map <C-n> :NERDTreeToggle<CR>
 let NERDTreeShowHidden=1
 
-" YCM
-" Let clangd fully control code completion
-let g:ycm_clangd_uses_ycmd_caching = 0
-" Use installed clangd, not YCM-bundled clangd which doesn't get updates.
-let g:ycm_clangd_binary_path = exepath("/opt/clang+llvm-10.0.0/bin/clang")
+" COC settings
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+if exists('*complete_info')
+  inoremap <expr> <CR> complete_info().selected != -1 ?
+            \ &filetype == "gdscript" ? (coc#expandable() ?  "\<C-y>" : "\<Esc>a") : "\<C-y>"
+            \ : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+" End of COC settings
+
+" COC highlight
+hi CocFloating ctermbg=black
+hi CocWarningFloat ctermbg=black ctermfg=yellow
 
 " Git diff colors
 if &diff
@@ -194,7 +265,7 @@ if &diff
 endif
 
 " PEP 8 indentation
-au BufNewFile, BufRead *.py
+au BufNewFile, BufRead *.py, *.gd
     \ set tabstop=4
     \ set softtabstop=4
     \ set shiftwidth=4
@@ -204,18 +275,27 @@ au BufNewFile, BufRead *.py
     \ set foldmethod=indent
 
 " Full stack development
-au BufNewFile,BufRead *.js, *.html, *.css
+au BufRead, BufNewFile *.js, *.html, *.css
     \ set tabstop=2
     \ set softtabstop=2
     \ set shiftwidth=2
 
 " Markdown
-au BufNewFile,BufRead *.md
+au BufNewFile, BufRead *.md
     \ set textwidth=80
+
+" Markdown instant
+let g:instant_markdown_autoscroll = 0
+let g:instant_markdown_browser = "chrome"
+let g:instant_markdown_mathjax = 1
+let g:instant_markdown_logfile = '/tmp/instant_markdown.log'
 
 " Flag unnecessary whitespace
 hi BadWhitespace ctermbg=red guibg=red
-au BufRead,BufNewFile *rc,*.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+au BufRead, BufNewFile *rc,*.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+" Vim Go settings
+let g:go_gopls_enabled = 0
 
 " python with virtualenv support
 py3 << EOF
