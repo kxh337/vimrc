@@ -47,6 +47,9 @@ return require('packer').startup(function(use)
     end
   }
 
+  -- git diff
+  use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+
   -- Telescope
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.1',
